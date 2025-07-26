@@ -1,6 +1,7 @@
 /* index.css or App.css */
 
 @tailwind components;
+
 body {
   margin: 0;
   padding: 0;

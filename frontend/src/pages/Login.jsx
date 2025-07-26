@@ -7,34 +7,33 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
 
+  // ✅ Google Login Handler
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        // ✅ Get user info using access token
-        const userInfo = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+        const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
           headers: {
             Authorization: `Bearer ${tokenResponse.access_token}`,
           },
         });
 
-        const { name, email } = userInfo.data;
+        const { name, email } = res.data;
 
-        // ✅ Store user to MySQL via backend
+        // ✅ Save to backend (MySQL via Express API)
         await axios.post("http://localhost:5000/api/users", { name, email });
 
-        // ✅ Store in local storage and redirect
         localStorage.setItem("user", JSON.stringify({ name, email }));
         navigate("/dashboard");
       } catch (error) {
         console.error("Google login error:", error);
-        alert("Login failed");
+        alert("Login failed while fetching user info");
       }
     },
     onError: () => alert("Google login failed"),
   });
 
+  // Optional: Manual login fallback
   const handleLogin = () => {
-    // Optional fake login fallback
     localStorage.setItem("user", "loggedin");
     navigate("/dashboard");
   };
@@ -44,7 +43,7 @@ const Login = () => {
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Log In</h2>
 
-        {/* Email */}
+        {/* Email Field */}
         <div className="mb-4">
           <label className="block text-gray-700 mb-1">Email *</label>
           <input
@@ -54,7 +53,7 @@ const Login = () => {
           />
         </div>
 
-        {/* Password */}
+        {/* Password Field */}
         <div className="mb-4">
           <label className="block text-gray-700 mb-1">Password *</label>
           <input
@@ -64,7 +63,7 @@ const Login = () => {
           />
         </div>
 
-        {/* Login Button (Optional for manual login) */}
+        {/* Manual Login Button */}
         <button
           onClick={handleLogin}
           className="w-full bg-green-400 text-white font-semibold py-3 rounded-full hover:bg-green-500 transition duration-300 mb-6"
@@ -79,16 +78,16 @@ const Login = () => {
           <hr className="flex-grow border-gray-300" />
         </div>
 
-        {/* Google Login */}
+        {/* Google Login Button */}
         <button
-          onClick={login}
+          onClick={() => login()}
           className="w-full flex items-center justify-center border border-gray-300 rounded-full py-3 hover:bg-gray-100"
         >
           <FcGoogle className="mr-2 text-xl" />
           Continue with Google
         </button>
 
-        {/* Facebook Button (non-functional placeholder) */}
+        {/* Facebook Button (non-functional) */}
         <button
           className="w-full mt-4 flex items-center justify-center border border-gray-300 rounded-full py-3 hover:bg-gray-100"
         >
