@@ -14,7 +14,6 @@ const Login = () => {
     onSuccess: async (tokenResponse) => {
       try {
         console.log("Access Token:", tokenResponse.access_token); // Debug
-
         const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
           headers: {
             Authorization: `Bearer ${tokenResponse.access_token}`,
@@ -34,16 +33,16 @@ const Login = () => {
       }
     },
     onError: (err) => {
-      console.error("Google login error:", err);
+      console.log("Google login error:", err);
       alert("Google login failed");
     },
   });
 
   // Optional: Manual login fallback
-  const handleLogin = () => {
-    localStorage.setItem("user", "loggedin");
-    navigate("/dashboard");
-  };
+  // const handleLogin = () => {
+  //   localStorage.setItem("user", "loggedin");
+  //   navigate("/dashboard");
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-200 to-blue-400">
