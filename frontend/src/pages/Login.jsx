@@ -1,12 +1,40 @@
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF } from "react-icons/fa";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
 
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        // ✅ Get user info using access token
+        const userInfo = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        });
+
+        const { name, email } = userInfo.data;
+
+        // ✅ Store user to MySQL via backend
+        await axios.post("http://localhost:5000/api/users", { name, email });
+
+        // ✅ Store in local storage and redirect
+        localStorage.setItem("user", JSON.stringify({ name, email }));
+        navigate("/dashboard");
+      } catch (error) {
+        console.error("Google login error:", error);
+        alert("Login failed");
+      }
+    },
+    onError: () => alert("Google login failed"),
+  });
+
   const handleLogin = () => {
-    // Fake login logic – replace with real Google login
+    // Optional fake login fallback
     localStorage.setItem("user", "loggedin");
     navigate("/dashboard");
   };
@@ -36,7 +64,7 @@ const Login = () => {
           />
         </div>
 
-        {/* Login button */}
+        {/* Login Button (Optional for manual login) */}
         <button
           onClick={handleLogin}
           className="w-full bg-green-400 text-white font-semibold py-3 rounded-full hover:bg-green-500 transition duration-300 mb-6"
@@ -51,25 +79,24 @@ const Login = () => {
           <hr className="flex-grow border-gray-300" />
         </div>
 
-        {/* Social buttons */}
-        <div className="space-y-4">
-          <button
-            onClick={handleLogin}
-            className="w-full flex items-center justify-center border border-gray-300 rounded-full py-3 hover:bg-gray-100"
-          >
-            <FcGoogle className="mr-2 text-xl" />
-            Continue with Google
-          </button>
+        {/* Google Login */}
+        <button
+          onClick={login}
+          className="w-full flex items-center justify-center border border-gray-300 rounded-full py-3 hover:bg-gray-100"
+        >
+          <FcGoogle className="mr-2 text-xl" />
+          Continue with Google
+        </button>
 
-          <button
-            className="w-full flex items-center justify-center border border-gray-300 rounded-full py-3 hover:bg-gray-100"
-          >
-            <FaFacebookF className="mr-2 text-blue-600 text-xl" />
-            Continue with Facebook
-          </button>
-        </div>
+        {/* Facebook Button (non-functional placeholder) */}
+        <button
+          className="w-full mt-4 flex items-center justify-center border border-gray-300 rounded-full py-3 hover:bg-gray-100"
+        >
+          <FaFacebookF className="mr-2 text-blue-600 text-xl" />
+          Continue with Facebook
+        </button>
 
-        {/* Remember and forgot password */}
+        {/* Remember / Forgot */}
         <div className="flex justify-between text-sm text-gray-600 mt-4">
           <label className="flex items-center space-x-2">
             <input type="checkbox" className="accent-green-500" />

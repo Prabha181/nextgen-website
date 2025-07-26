@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserCrud from "../components/UserCrud";
 
@@ -6,10 +6,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!localStorage.getItem("user")) {
-      navigate("/");
+    const user = localStorage.getItem("user");
+    if (!user) {
+      navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-green-300 to-blue-500 flex items-center justify-center p-6">
