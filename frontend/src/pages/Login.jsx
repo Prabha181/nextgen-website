@@ -7,10 +7,14 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
 
-  // ✅ Google Login Handler
+  // ✅ Google Login Handler with proper flow + scope
   const login = useGoogleLogin({
+    flow: "implicit",
+    scope: "openid profile email",
     onSuccess: async (tokenResponse) => {
       try {
+        console.log("Access Token:", tokenResponse.access_token); // Debug
+
         const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
           headers: {
             Authorization: `Bearer ${tokenResponse.access_token}`,
@@ -25,11 +29,14 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify({ name, email }));
         navigate("/dashboard");
       } catch (error) {
-        console.error("Google login error:", error);
+        console.error("Google login error:", error.response?.data || error.message);
         alert("Login failed while fetching user info");
       }
     },
-    onError: () => alert("Google login failed"),
+    onError: (err) => {
+      console.error("Google login error:", err);
+      alert("Google login failed");
+    },
   });
 
   // Optional: Manual login fallback
