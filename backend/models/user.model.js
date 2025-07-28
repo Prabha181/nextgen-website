@@ -1,13 +1,16 @@
-const initUserModel = (sequelize, Sequelize, DataTypes) => {
-  return sequelize.define("user", {
-    name: { 
-      type: DataTypes.STRING 
-    },
-    email: { 
+// models/user.model.js ✅
+const initUserModel = (sequelize, DataTypes) => {
+  const User = sequelize.define("user", {
+    name: {
       type: DataTypes.STRING,
-      unique: true
+    },
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
     },
   });
+
+  return User;
 };
 
 export default initUserModel;
