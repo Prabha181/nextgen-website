@@ -13,7 +13,7 @@ const Login = () => {
     scope: "openid profile email",
     onSuccess: async (tokenResponse) => {
       try {
-        console.log("Access Token:", tokenResponse.access_token); // Debug
+        // console.log("Access Token:", tokenResponse.access_token); // Debug
         const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
           headers: {
             Authorization: `Bearer ${tokenResponse.access_token}`,
@@ -23,7 +23,7 @@ const Login = () => {
         const { name, email } = res.data;
 
         // ✅ Save to backend (MySQL via Express API)
-        await axios.post("http://localhost:5000/api/users", { name, email });
+        await axios.post("http://nextgen-api.vercel.app/api/users", { name, email });
 
         localStorage.setItem("user", JSON.stringify({ name, email }));
         navigate("/dashboard");
