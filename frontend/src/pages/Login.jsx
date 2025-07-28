@@ -9,11 +9,11 @@ const Login = () => {
 
   // ✅ Google Login Handler with proper flow + scope
   const login = useGoogleLogin({
-    flow: "implicit",
+    // flow: "implicit",
     scope: "openid profile email",
     onSuccess: async (tokenResponse) => {
       try {
-        // console.log("Access Token:", tokenResponse.access_token); // Debug
+        console.log("Access Token:", tokenResponse.access_token); // Debug
         const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
           headers: {
             Authorization: `Bearer ${tokenResponse.access_token}`,
@@ -23,13 +23,14 @@ const Login = () => {
         const { name, email } = res.data;
 
         // ✅ Save to backend (MySQL via Express API)
-        // await axios.post("https://nextgen-backend.onrender.com/api/users", { name, email });
-        await axios.post("http://localhost:5000/api/users/google", { name, email});
+        await axios.post("https://nextgen-backend.onrender.com/api/users", { name, email });
+        // await axios.post("http://localhost:5000/api/users/google", { name, email});
 
         localStorage.setItem("user", JSON.stringify({ name, email }));
         navigate("/dashboard");
       } catch (error) {
-        console.error("Google login error:", error.response?.data || error.message);
+        // console.error("Google login error:", error.response?.data || error.message);
+        console.error("Google login error:", error)
         alert("Login failed while fetching user info");
       }
     },

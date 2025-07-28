@@ -14,8 +14,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
-// ✅ Route: /api/users
 app.use("/api/users", userRoutes);
 
 // ✅ Sync DB and start server
