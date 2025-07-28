@@ -23,7 +23,8 @@ const Login = () => {
         const { name, email } = res.data;
 
         // ✅ Save to backend (MySQL via Express API)
-        await axios.post("http://nextgen-api.vercel.app/api/users", { name, email });
+        // await axios.post("https://nextgen-backend.onrender.com/api/users", { name, email });
+        await axios.post("http://localhost:5000/api/users/google", { name, email});
 
         localStorage.setItem("user", JSON.stringify({ name, email }));
         navigate("/dashboard");

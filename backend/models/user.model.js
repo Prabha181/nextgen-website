@@ -1,7 +1,12 @@
-const initUserModel = (sequelize, Sequelize) => {
+const initUserModel = (sequelize, Sequelize, DataTypes) => {
   return sequelize.define("user", {
-    name: { type: Sequelize.STRING },
-    email: { type: Sequelize.STRING },
+    name: { 
+      type: DataTypes.STRING 
+    },
+    email: { 
+      type: DataTypes.STRING,
+      unique: true
+    },
   });
 };
 
